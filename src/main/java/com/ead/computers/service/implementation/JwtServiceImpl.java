@@ -20,7 +20,7 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class JwtServiceImpl implements JwtServise {
-    @Value("5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437")
+    @Value("8Zz5tw0Ionm3XPZZfN0NOml3z9FMfmpgXwovR9fp6ryDIoGRM8EPHAB6iHsc0fb")
     private String JwtSignInKey;
 
     @Override
@@ -60,8 +60,7 @@ public class JwtServiceImpl implements JwtServise {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token)
-                .getBody();
+        return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
     }
 
     private Key getSigningKey() {

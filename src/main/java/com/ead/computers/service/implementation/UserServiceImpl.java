@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
     @Override
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {

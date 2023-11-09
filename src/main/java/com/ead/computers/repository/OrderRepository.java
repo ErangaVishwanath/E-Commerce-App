@@ -1,12 +1,9 @@
 package com.ead.computers.repository;
 
-import com.ead.computers.entities.Product;
+import com.ead.computers.entities.PurchaseOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
-
+public interface OrderRepository extends JpaRepository<PurchaseOrder, Long> {
 }

@@ -1,22 +1,24 @@
 package com.ead.computers.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
-@Table(name = "category")
+@Table(name = "order_item")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Category {
+@AllArgsConstructor
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
-    @Size(max = 50)
-    private String name;
+    private int quantity;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private PurchaseOrder purchaseOrder;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 }

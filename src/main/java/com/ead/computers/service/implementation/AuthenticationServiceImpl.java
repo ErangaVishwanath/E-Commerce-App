@@ -3,8 +3,11 @@ package com.ead.computers.service.implementation;
 import com.ead.computers.dao.request.SignInRequest;
 import com.ead.computers.dao.request.SignUpRequest;
 import com.ead.computers.dao.response.JwtAuthenticationResponse;
+import com.ead.computers.entities.Customer;
+import com.ead.computers.entities.Product;
 import com.ead.computers.entities.Role;
 import com.ead.computers.entities.User;
+import com.ead.computers.repository.CustomerRepository;
 import com.ead.computers.repository.UserRepository;
 import com.ead.computers.service.AuthenticationServise;
 import com.ead.computers.service.JwtServise;
@@ -24,6 +27,7 @@ public class AuthenticationServiceImpl implements AuthenticationServise {
     private final PasswordEncoder passwordEncoder;
     private final JwtServise jwtServise;
     private final AuthenticationManager authenticationManager;
+    private final CustomerRepository customerRepository;
 
     @Override
     public JwtAuthenticationResponse signup(SignUpRequest request) {
@@ -33,6 +37,14 @@ public class AuthenticationServiceImpl implements AuthenticationServise {
                 .role(Role.USER).build();
         user.setCreatedAt(LocalDateTime.now());
         userRepository.save(user);
+        Customer customer = new Customer();
+        customer.setFirstName(request.getFirstName());
+        customer.setLastName(request.getLastName());
+        customer.setEmail(request.getEmail());
+        customer.setMobile(request.getMobile());
+        customer.setAddress(request.getAddress());
+        customer.setCreatedAt(LocalDateTime.now());
+        customerRepository.save(customer);
         var jwt = jwtServise.generateToken(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
