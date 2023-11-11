@@ -8,4 +8,7 @@ public interface AuthenticationServise {
     JwtAuthenticationResponse signup(SignUpRequest request);
 
     JwtAuthenticationResponse signin(SignInRequest request);
+    JwtAuthenticationResponse adminSignup(SignUpRequest request);
+
+    JwtAuthenticationResponse adminSignin(SignInRequest request);
 }

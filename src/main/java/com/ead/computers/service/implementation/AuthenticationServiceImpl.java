@@ -58,4 +58,28 @@ public class AuthenticationServiceImpl implements AuthenticationServise {
         var jwt = jwtServise.generateToken(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
+
+    @Override
+    public JwtAuthenticationResponse adminSignup(SignUpRequest request) {
+        var admin = User.builder().firstName(request.getFirstName()).lastName(request.getLastName())
+                .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
+                .mobile(request.getMobile()).address(request.getAddress())
+                .role(Role.ADMIN).build();
+        admin.setCreatedAt(LocalDateTime.now());
+        userRepository.save(admin);
+        var jwt = jwtServise.generateToken(admin);
+        return JwtAuthenticationResponse.builder().token(jwt).build();
+    }
+
+    @Override
+    public JwtAuthenticationResponse adminSignin(SignInRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        var admin = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+        var jwt = jwtServise.generateToken(admin);
+        return JwtAuthenticationResponse.builder().token(jwt).build();
+    }
+
+
 }

@@ -2,7 +2,6 @@ package com.ead.computers.controller;
 
 import com.ead.computers.dao.request.OrderRequest;
 import com.ead.computers.service.implementation.OrderService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
