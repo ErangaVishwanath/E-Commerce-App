@@ -33,6 +33,7 @@ public class User implements UserDetails {
     private LocalDateTime createdAt;
     private String address;
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(255)")
     private Role role;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

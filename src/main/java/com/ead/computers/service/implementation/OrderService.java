@@ -2,11 +2,9 @@ package com.ead.computers.service.implementation;
 
 import com.ead.computers.dao.request.OrderItemRequest;
 import com.ead.computers.dao.request.OrderRequest;
-import com.ead.computers.entities.Customer;
-import com.ead.computers.entities.PurchaseOrder;
-import com.ead.computers.entities.OrderItem;
-import com.ead.computers.entities.Product;
+import com.ead.computers.entities.*;
 import com.ead.computers.repository.CustomerRepository;
+import com.ead.computers.repository.DeliverRepository;
 import com.ead.computers.repository.OrderRepository;
 import com.ead.computers.repository.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -15,12 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
+    private final DeliverRepository deliverRepository;
 
     @Transactional
     public void createOrder(OrderRequest orderRequest) {
@@ -31,6 +34,17 @@ public class OrderService {
 //        create order
         PurchaseOrder purchaseOrder = new PurchaseOrder();
         purchaseOrder.setCustomer(customer);
+        purchaseOrder.setReturnDate(orderRequest.getReturnDate());
+
+//        Assign Deliver
+        Deliver deliver = deliverRepository.findById(orderRequest.getDeliverId())
+                .orElseThrow(() -> new RuntimeException("Delivery person not found"));
+        purchaseOrder.setDeliver(deliver);
+
+        DeliverDetails deliverDetails = new DeliverDetails();
+        deliverDetails.setDeliver(deliver);
+
+
 
 //        process order items
         for (OrderItemRequest itemRequest : orderRequest.getOrderItems()) {
@@ -50,8 +64,14 @@ public class OrderService {
                 throw new RuntimeException("Not enough quantity available for product with ID: " + itemRequest.getProductId());
             }
         }
+        purchaseOrder.setCreateAt(LocalDateTime.now());
+        deliverDetails.setOrder(purchaseOrder);
+        deliver.addOrder(deliverDetails);
 //        save the order
         orderRepository.save(purchaseOrder);
     }
 
+    public List<PurchaseOrder> allOrders() {
+        return orderRepository.findAll();
+    }
 }

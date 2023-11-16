@@ -22,7 +22,7 @@ public class ProductController {
     private final ProductRepository productRepository;
 
     @PostMapping("/save")
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public Product saveProduct(@RequestBody ProductRequest productRequest) {
         Optional<Category> optionalCategory = categoryRepository.findById(productRequest.getCategoryId());
         if (optionalCategory.isPresent()) {
@@ -42,7 +42,7 @@ public class ProductController {
     }
 
     @GetMapping("/all product")
-    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
+//    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
     public List<Product> getAllProduct() {
         return productService.allProduct();
     }

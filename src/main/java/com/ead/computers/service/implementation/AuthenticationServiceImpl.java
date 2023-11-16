@@ -3,11 +3,9 @@ package com.ead.computers.service.implementation;
 import com.ead.computers.dao.request.SignInRequest;
 import com.ead.computers.dao.request.SignUpRequest;
 import com.ead.computers.dao.response.JwtAuthenticationResponse;
-import com.ead.computers.entities.Customer;
-import com.ead.computers.entities.Product;
-import com.ead.computers.entities.Role;
-import com.ead.computers.entities.User;
+import com.ead.computers.entities.*;
 import com.ead.computers.repository.CustomerRepository;
+import com.ead.computers.repository.DeliverRepository;
 import com.ead.computers.repository.UserRepository;
 import com.ead.computers.service.AuthenticationServise;
 import com.ead.computers.service.JwtServise;
@@ -28,6 +26,7 @@ public class AuthenticationServiceImpl implements AuthenticationServise {
     private final JwtServise jwtServise;
     private final AuthenticationManager authenticationManager;
     private final CustomerRepository customerRepository;
+    private final DeliverRepository deliverRepository;
 
     @Override
     public JwtAuthenticationResponse signup(SignUpRequest request) {
@@ -72,14 +71,18 @@ public class AuthenticationServiceImpl implements AuthenticationServise {
     }
 
     @Override
-    public JwtAuthenticationResponse adminSignin(SignInRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        var admin = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
-        var jwt = jwtServise.generateToken(admin);
+    public JwtAuthenticationResponse deliverSignup(SignUpRequest request) {
+        var deliver = User.builder().firstName(request.getFirstName()).lastName(request.getLastName())
+                .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
+                .mobile(request.getMobile()).address(request.getAddress())
+                .role(Role.DELI).build();
+        deliver.setCreatedAt(LocalDateTime.now());
+        userRepository.save(deliver);
+        Deliver deliver1 = new Deliver();
+        deliver1.setName(request.getFirstName() + " " + request.getLastName());
+        deliver1.setPhone(Integer.parseInt(request.getMobile()));
+        deliverRepository.save(deliver1);
+        var jwt = jwtServise.generateToken(deliver);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
-
-
 }

@@ -3,6 +3,9 @@ package com.ead.computers.entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +20,13 @@ public class PurchaseOrder {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+    @ManyToOne
+    @JoinColumn(name = "deliver_id")
+    private Deliver deliver;
     @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
+    private LocalDateTime CreateAt;
+    private LocalDate returnDate;
 
     public PurchaseOrder() {
         this.orderItems = new ArrayList<>();
